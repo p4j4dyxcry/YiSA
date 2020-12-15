@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using YiSA.Foundation.Common.Extensions;
 
-namespace YiSA.WPF.Common
+namespace YiSA.Markup.Common
 {
     public class DisposableBindable : Bindable , IDisposable
     {
@@ -20,7 +19,10 @@ namespace YiSA.WPF.Common
 
             if (disposing)
             {
-                Disposables.ForEach(item => item.Dispose());
+                foreach (var disposable in Disposables)
+                {
+                    disposable.Dispose();
+                }
             }
             _disposed = true;
         }

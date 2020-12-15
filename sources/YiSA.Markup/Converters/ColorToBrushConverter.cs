@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using YiSA.WPF.Extensions;
+using YiSA.Markup.MethodExtensions;
 
-namespace YiSA.WPF.Converters
+namespace YiSA.Markup.Converters
 {
     /// <summary>
     /// 色からブラシに変換するコンバーター

@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace YiSA.WPF.Extensions
+namespace YiSA.Markup.MethodExtensions
 {
     public static class VisualTreeExtensions
     {

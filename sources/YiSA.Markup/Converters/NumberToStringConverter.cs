@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace YiSA.WPF.Converters
+namespace YiSA.Markup.Converters
 {
     /// <summary>
     /// 数値からテキストに変換するコンバーター

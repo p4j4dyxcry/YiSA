@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace YiSA.WPF.Common
+namespace YiSA.Markup.Common
 {
     public static class Boxes
     {

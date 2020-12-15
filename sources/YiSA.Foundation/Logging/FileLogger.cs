@@ -54,6 +54,8 @@ namespace YiSA.Foundation.Logging
         {
             FileSystemUtility.TryCreateParentDirectory(_absoluteFilePath);
 
+            IScheduler a;
+            
             await Task.Run(async () =>
             {
                 while (true)

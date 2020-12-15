@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using YiSA.WPF.Common;
+using YiSA.Markup.Common;
 
-namespace YiSA.WPF.Converters
+namespace YiSA.Markup.Converters
 {
     public class BoolToAnyConverter : IValueConverter
     {

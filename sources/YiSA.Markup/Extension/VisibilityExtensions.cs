@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Markup;
-using YiSA.WPF.Common;
-using YiSA.WPF.Converters;
+using YiSA.Markup.Common;
+using YiSA.Markup.Converters;
 
-namespace YiSA.WPF.MarkupEx
+namespace YiSA.Markup.Extension
 {
     public class TrueToVisibleExtension: MarkupExtension
     {

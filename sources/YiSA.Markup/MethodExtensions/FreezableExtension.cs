@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace YiSA.WPF.Extensions
+namespace YiSA.Markup.MethodExtensions
 {
     public static class FreezableExtension
     {

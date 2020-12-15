@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Markup;
 using System.Windows.Media.Animation;
-using YiSA.WPF.Animations;
+using YiSA.Markup.Animations;
 
-namespace YiSA.WPF.MarkupEx
+namespace YiSA.Markup.Extension
 {
     public class SnapEasingExtension : MarkupExtension
     {

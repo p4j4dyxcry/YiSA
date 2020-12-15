@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Windows.Markup;
-using YiSA.WPF.Converters;
+using YiSA.Markup.Converters;
 
-namespace YiSA.WPF.MarkupEx
+namespace YiSA.Markup.Extension
 {
     public class ColorToBrushExtension : MarkupExtension
     {

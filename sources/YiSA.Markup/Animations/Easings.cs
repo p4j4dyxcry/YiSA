@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Media.Animation;
 
-namespace YiSA.WPF.Animations
+namespace YiSA.Markup.Animations
 {
     public enum EaseType
     {
