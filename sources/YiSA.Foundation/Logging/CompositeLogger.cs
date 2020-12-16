@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using YiSA.Foundation.Common.Extensions;
 
 namespace YiSA.Foundation.Logging
 {
@@ -32,8 +31,10 @@ namespace YiSA.Foundation.Logging
 
         public void Dispose()
         {
-            _loggers.OfType<IDisposable>()
-                .ForEach(x=>x.Dispose());
+            foreach (var disposable in _loggers.OfType<IDisposable>())
+            {
+                disposable.Dispose();
+            }
         }
     }
 }

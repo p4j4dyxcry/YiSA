@@ -3,7 +3,6 @@
     <PropertyGroup>
         <UseWPF>true</UseWPF>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net461;netcoreapp3.1</TargetFrameworks>
-        <LangVersion>8</LangVersion>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 </Project>

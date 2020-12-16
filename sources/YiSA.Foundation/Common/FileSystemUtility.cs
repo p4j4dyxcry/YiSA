@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using YiSA.Foundation.Common.Extensions;
 using YiSA.Foundation.Internal;
 
 namespace YiSA.Foundation.Common
@@ -27,11 +26,16 @@ namespace YiSA.Foundation.Common
             if (TryCreateParentDirectory(destAbsolutePath) is false)
                 return false;
 
-            Directory.EnumerateFiles(sourceAbsolutePath, "*", SearchOption.TopDirectoryOnly)
-                .ForEach(x=>File.Copy(x,Path.Combine(destAbsolutePath,Path.GetFileName(x)),overwrite));
+            foreach (var file in Directory.EnumerateFiles(sourceAbsolutePath, "*", SearchOption.TopDirectoryOnly))
+            {
+                File.Copy(file, Path.Combine(destAbsolutePath, Path.GetFileName(file)), overwrite);
+            }
+
+            foreach (var dir in Directory.EnumerateFiles(sourceAbsolutePath, "*", SearchOption.TopDirectoryOnly))
+            {
+                CopyDirectory(dir, Path.Combine(destAbsolutePath, Path.GetFileName(dir)), overwrite);
+            }
             
-            Directory.EnumerateDirectories(sourceAbsolutePath, "*", SearchOption.TopDirectoryOnly)
-                .ForEach(x=>CopyDirectory(x,Path.Combine(destAbsolutePath,Path.GetFileName(x)),overwrite));
             return true;
         }
     }

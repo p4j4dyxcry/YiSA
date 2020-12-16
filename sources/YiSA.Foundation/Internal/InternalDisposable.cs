@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using YiSA.Foundation.Common.Extensions;
 
 namespace YiSA.Foundation.Internal
 {
@@ -38,7 +37,10 @@ namespace YiSA.Foundation.Internal
         
         public void Dispose()
         {
-            Disposables.ForEach(x=>x.Dispose());
+            foreach (var disposable in Disposables)
+            {
+                disposable.Dispose();
+            }
         }
     }
 }

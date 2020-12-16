@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using YiSA.Foundation.Common.Extensions;
 
 namespace YiSA.Foundation.Logging.Extensions
 {
@@ -14,9 +13,11 @@ namespace YiSA.Foundation.Logging.Extensions
             {
                 if(t.Exception is null)
                     return;
-                
-                t.Exception.InnerExceptions
-                    .ForEach(e =>logger.WriteLine(formatter(e),LogLevel.Error));
+
+                foreach (var e in t.Exception.InnerExceptions)
+                {
+                    logger.WriteLine(formatter(e), LogLevel.Error);
+                }
             });
         }
 

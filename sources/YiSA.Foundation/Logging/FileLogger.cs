@@ -16,51 +16,39 @@ namespace YiSA.Foundation.Logging
     {
         private readonly CancellationTokenSource _cancellationToken;
         private readonly string _absoluteFilePath;
-        private readonly int _writeTimeSpanMs;
-        private int _startedWriteQueueThread;
-        private ConcurrentQueue<FileLoggerLogInfo> _queue = new ConcurrentQueue<FileLoggerLogInfo>();
-        private Func<string, LogLevel, DateTime,string> _loggingFormatFunction;
+        private FileLoggerOption _option;
+        private Task? _currentWriteFileTask;
+        private ConcurrentQueue<(string,LogLevel,DateTime)> _queue = new ConcurrentQueue<(string,LogLevel,DateTime)>();
         
-        public FileLogger(string absoluteFilePath , int writeSpanMs = 2000)
+        public FileLogger(string absoluteFilePath , FileLoggerOption? option)
         {
             Debug.Assert(string.IsNullOrWhiteSpace(absoluteFilePath));
             _absoluteFilePath = absoluteFilePath;
-            _writeTimeSpanMs = writeSpanMs;
-            _loggingFormatFunction = (msg, lv, dt) => $"{dt}:{lv}:{msg}";
+            _option = option ?? FileLoggerOption.Default;
             _cancellationToken = new CancellationTokenSource()
                 .DisposeBy(Disposables);
-        }
-
-        public void OverrideLoggingFormat(Func<string, LogLevel, DateTime,string> formatter)
-        {
-            _loggingFormatFunction = formatter;
         }
         
         public void WriteLine(string message, LogLevel logLevel)
         {
-            if (_startedWriteQueueThread is 0)
-            {
-                Interlocked.Increment(ref _startedWriteQueueThread);
-
-                if (_startedWriteQueueThread is 1)
-                {
-                    _ = _startWriteToFileThread(_cancellationToken.Token);                    
-                }
-            }
-            _queue.Enqueue(new FileLoggerLogInfo(message,logLevel,DateTime.Now));
+            if(logLevel < _option.LoggingLevel)
+                return;
+            
+            if (_option.IsAsync)
+                _ = WriteLineToQueue(message,logLevel,DateTime.Now);
+            else
+                WriteLineToFile(message,logLevel,DateTime.Now);
         }
 
-        private async Task _startWriteToFileThread(CancellationToken cancellationToken)
+        private Task _startWriteToFileThread(CancellationToken cancellationToken)
         {
             FileSystemUtility.TryCreateParentDirectory(_absoluteFilePath);
 
-            IScheduler a;
-            
-            await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 while (true)
                 {
-                    await Task.Delay(_writeTimeSpanMs, cancellationToken);
+                    await Task.Delay(_option.AsyncLoggingInterval, cancellationToken);
 
                     if (_cancellationToken.IsCancellationRequested)
                     {
@@ -71,36 +59,145 @@ namespace YiSA.Foundation.Logging
 
                 }
             }, cancellationToken);
-        }
+            
+            void WriteQueueToFile()
+            {
+                if(_queue.IsEmpty)
+                    return;
 
-        private void WriteQueueToFile()
+                var list = new List<(string,LogLevel,DateTime)>();
+                while (_queue.Any())
+                {
+                    if(_queue.TryDequeue(out var info))
+                        list.Add((info.Item1,info.Item2,info.Item3));
+                }
+
+                WriteLinesToFile(list);
+            }
+        }
+        
+        private void WriteLineToFile(string message, LogLevel logLevel,DateTime dateTime)
         {
-            if(_queue.IsEmpty)
+            WriteLinesToFile(new []{(message,logLevel,dateTime)});
+        }
+        
+        private async Task WriteLineToQueue(string message , LogLevel logLevel,DateTime dateTime)
+        {
+            _queue.Enqueue((message,logLevel,dateTime));
+
+            if (_currentWriteFileTask is {})
                 return;
 
-            var list = new List<string>();
-            while (_queue.Any())
+            _currentWriteFileTask = Task.Run(async () =>
             {
-                if(_queue.TryDequeue(out var info))
-                    list.Add(_loggingFormatFunction(info.Message,info.LogLevel,info.DateTime));
+                await Task.Delay(_option.AsyncLoggingInterval);
+
+                var list = new List<(string,LogLevel,DateTime)>();
+                while (_queue.Any())
+                {
+                    if(_queue.TryDequeue(out var info))
+                        list.Add((info.Item1,info.Item2,info.Item3));
+                }
+
+                WriteLinesToFile(list);
+            },_cancellationToken.Token);
+            await _currentWriteFileTask;
+            _currentWriteFileTask = null;
+        }
+
+        private void WriteLinesToFile(IEnumerable<(string message, LogLevel logLevel, DateTime dateTime)>lines)
+        {
+            var stringLines = lines.Select(x=>_option.LoggingFormatter(x.message,x.logLevel,x.dateTime));
+
+            var filePath = _absoluteFilePath;
+            var fileName = Path.GetFileName(filePath);
+            int index = 2;
+            while (File.Exists(filePath))
+            {
+                var fileInfo = new FileInfo(filePath);
+                if (fileInfo.Length < _option.MaximumFileSizeByte)
+                    break;
+                filePath = FilePathUtility.RenameWithOutExtension(_absoluteFilePath,$"{fileName}{index++}");
             }
             
-            using var mutex = new FileSystemMutex(_absoluteFilePath);
-            File.AppendAllLines(_absoluteFilePath,list);
+            using var mutex = new FileSystemMutex(filePath);
+            File.AppendAllLines(filePath,stringLines);
         }
     }
-
-    internal class FileLoggerLogInfo
+    
+    public class FileLoggerOption
     {
-        public FileLoggerLogInfo(string message, LogLevel logLevel,DateTime dateTime)
-        {
-            Message = message;
-            LogLevel = logLevel;
-            DateTime = dateTime;
-        }
+        public bool IsAsync { get;private set; }
+        public TimeSpan AsyncLoggingInterval { get;private set; }
+        public long MaximumFileSizeByte { get;private set; }
+        public Func<string, LogLevel, DateTime,string> LoggingFormatter { get; set; }
+        public LogLevel LoggingLevel { get; private set; }
 
-        public string Message { get; } 
-        public DateTime DateTime { get; }
-        public LogLevel LogLevel { get; }
+        private FileLoggerOption(FileLoggerOption? option)
+        {
+            if (option != null)
+            {
+                IsAsync = option.IsAsync;
+                AsyncLoggingInterval = option.AsyncLoggingInterval;
+                MaximumFileSizeByte = option.MaximumFileSizeByte;
+                LoggingFormatter = option.LoggingFormatter;
+                LoggingLevel = option.LoggingLevel;
+            }
+            else
+            {
+                LoggingFormatter = DefaultLoggingFormatter;
+            }
+        }
+        
+        public static FileLoggerOption Default { get; } 
+            = new FileLoggerOption(default)
+            {
+                IsAsync = true,
+                AsyncLoggingInterval = TimeSpan.FromMilliseconds(2000),
+                MaximumFileSizeByte = 100 * 1024 * 1024 , // 100MB
+            };
+        private static readonly Func<string, LogLevel, DateTime,string> DefaultLoggingFormatter = (msg, lv, dt) => $"{dt}:{lv}:{msg}";
+
+        public FileLoggerOption WithLoggingFormatter(Func<string, LogLevel, DateTime, string> formatter)
+        {
+            return new FileLoggerOption(this)
+            {
+                LoggingFormatter = formatter
+            };
+        }
+        
+        public FileLoggerOption WithSync()
+        {
+            return new FileLoggerOption(this)
+            {
+                IsAsync = false,
+            };
+        }   
+        
+        public FileLoggerOption WithLoggingAsyncLoggingInterval(TimeSpan interval)
+        {
+            return new FileLoggerOption(this)
+            {
+                IsAsync = true,
+                AsyncLoggingInterval = interval,
+            };
+        }    
+        
+        public FileLoggerOption WithLoggingMaximumFileSizeByte(long szByte)
+        {
+            return new FileLoggerOption(this)
+            {
+                MaximumFileSizeByte = szByte,
+            };
+        }        
+        
+        public FileLoggerOption WithLoggingLevel(LogLevel level)
+        {
+            return new FileLoggerOption(this)
+            {
+                LoggingLevel = level,
+            };
+        }
+        
     }
 }

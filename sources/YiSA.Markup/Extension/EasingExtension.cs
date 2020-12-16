@@ -24,7 +24,7 @@ namespace YiSA.Markup.Extension
         private EaseType _easeType;
         public EasingExtension(EaseType easeType)
         {
-            
+            _easeType = easeType;
         }
         
         public override object ProvideValue(IServiceProvider serviceProvider)

@@ -7,7 +7,7 @@ namespace YiSA.Markup.Converters
 {
     public class EqualToVisibleConverter : IValueConverter
     {
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         public Visibility True { get; set; } = Visibility.Visible;
         public Visibility False { get; set; } = Visibility.Collapsed;
