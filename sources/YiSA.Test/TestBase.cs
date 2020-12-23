@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Text;
 using System.Threading;
 using Xunit.Abstractions;
+using YiSA.Foundation.Common.Extensions;
 using YiSA.Foundation.Logging;
 
 namespace YiSA.Test
@@ -87,9 +88,9 @@ namespace YiSA.Test
             
             return Disposable.Create(() =>
             {
-                var elapsed = stopwatch.ElapsedMilliseconds;
+                var elapsed = stopwatch.ElapsedMicroseconds();
                 indent.Dispose();
-                Logger.WriteLine($"/{message} : Elapsed = \"{elapsed} ms\"",LogLevel.Default);                
+                Logger.WriteLine($"/{message} : Elapsed = \"{elapsed} µs\"",LogLevel.Default);                
             });
         }
 

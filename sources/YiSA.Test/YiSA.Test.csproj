@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\sources\YiSA.Foundation\YiSA.Foundation.csproj" />
-      <ProjectReference Include="..\sources\YiSA.WPF.MvvmFramework\YiSA.WPF.MvvmFramework.csproj" />
+      <ProjectReference Include="..\YiSA.Foundation\YiSA.Foundation.csproj" />
+      <ProjectReference Include="..\YiSA.WPF.MvvmFramework\YiSA.WPF.MvvmFramework.csproj" />
     </ItemGroup>
 
 </Project>

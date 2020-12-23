@@ -1,35 +1,25 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using Xunit;
 using Xunit.Abstractions;
 using YiSA.Foundation.Common;
-using YiSA.Foundation.Logging;
 
 namespace YiSA.Test
 {
-    public class SimpleWrapper
-    {
-        private object obj = null;
-        public T Get<T>()
-        {
-            return (T) obj;
-        }
-        public void Set<T>(T value)
-        {
-            obj = value;
-        }
-        
-    }
-    
-    
     public class StructuredValueTest : TestBase
     {
         public StructuredValueTest(ITestOutputHelper helper) : base(helper)
         {
         }
 
-        [Fact]
-        public void ByteWriteTest()
+        [Fact(DisplayName = "byte サイズが意図した大きさになっていることを確認")]
+        void ByteSizeCheck()
+        {
+            Assert.Equal(16,Unsafe.SizeOf<StructuredValue16>());
+        }
+        
+        [Fact(DisplayName = "値の変更が連動していることを確認")]
+        public void ValueChangedTest()
         {
             var value = new StructuredValue16
             {
@@ -57,7 +47,7 @@ namespace YiSA.Test
             Assert.Equal(100, value.Get<long>());
         }
 
-        [Fact]
+        [Fact(DisplayName = "浮動小数型の値が正しく設定できているかを確認")]
         public void FloatTest()
         {
             var value = new StructuredValue16();
@@ -88,61 +78,5 @@ namespace YiSA.Test
             Assert.Equal(0.25f, value.Get<float>());
         }
 
-        private void a()
-        {
-            SimpleWrapper value = new SimpleWrapper();
-            float sum = 0;
-            for (int i = 0; i < 10000000; ++i)
-            {
-                value.Set<float>(i);
-                sum += value.Get<float>() * 0.00001f;
-            }
-
-            Logger.WriteLine($"sum = {sum}", LogLevel.Default);
-        }
-
-        private void b()
-        {
-            var value = new StructuredValue16();
-
-            float sum = 0;
-            for (int i = 0; i < 10000000; ++i)
-            {
-                value.Set<float>(i);
-                sum += value.Get<float>() * 0.00001f;
-            }
-
-            Logger.WriteLine($"sum = {sum}", LogLevel.Default);
-        }
-
-        private void c()
-        {
-            
-            var value = new StructuredValue16();
-
-            float sum = 0;
-            for (int i = 0; i < 10000000; ++i)
-            {
-                value.AsFloat = i;
-                sum += value.AsFloat * 0.00001f;
-            }
-
-            Logger.WriteLine($"sum = {sum}", LogLevel.Default);
-
-        }
-        
-        [Fact]
-        public void SpeedTest()
-        {
-            foreach (var _ in Enumerable.Range(0, 30))
-            {
-                using (ProfileTime("object"))
-                    a();
-                using (ProfileTime("generic"))
-                    b();
-                using (ProfileTime("direct"))
-                    c();
-            }
-        }
     }
 }
