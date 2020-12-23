@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>YiSA.WPF</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Messaging" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\YiSA.Foundation\YiSA.Foundation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Reactive.Core" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

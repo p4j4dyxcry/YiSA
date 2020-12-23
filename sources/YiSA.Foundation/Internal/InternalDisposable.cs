@@ -33,7 +33,7 @@ namespace YiSA.Foundation.Internal
 
     public class DisposableHolder : IDisposable
     {
-        internal IList<IDisposable> Disposables { get; }= new List<IDisposable>();
+        protected IList<IDisposable> Disposables { get; }= new List<IDisposable>();
         
         public void Dispose()
         {

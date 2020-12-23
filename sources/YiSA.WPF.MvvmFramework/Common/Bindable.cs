@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace YiSA.Markup.Common
+namespace YiSA.WPF.Common
 {
     public class Bindable : INotifyPropertyChanged
     {

@@ -6,6 +6,7 @@ namespace YiSA.Markup.Animations
 {
     public enum EaseType
     {
+        None,
         Cubic,
         EaseIn,
         EaseOut,
@@ -16,7 +17,17 @@ namespace YiSA.Markup.Animations
         EaseOutBack,
         EaseInOutBack,
     }
-    
+
+    public class NoneEasing : IEasingFunction
+    {
+        public static IEasingFunction Default { get; } = new NoneEasing();
+        
+        public double Ease(double t)
+        {
+            return t;
+        }
+    }
+
     public class CubicEasing : IEasingFunction
     {
         public double Ease(double t)

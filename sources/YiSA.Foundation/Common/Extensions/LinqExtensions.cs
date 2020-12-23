@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YiSA.Foundation.Common.Extensions
 {
@@ -17,5 +18,22 @@ namespace YiSA.Foundation.Common.Extensions
         {
             return item.AddTo(collection);
         }
+
+        public static T MinBy<T, U>(this IEnumerable<T> source, Func<T, U> selector)
+        {
+            return source.MinMaxBy(selector).min;
+        }
+        
+        public static T MaxBy<T, U>(this IEnumerable<T> source, Func<T, U> selector)
+        {
+            return source.MinMaxBy(selector).max;
+        }
+        
+        public static (T min ,T max) MinMaxBy<T, U>(this IEnumerable<T> source, Func<T, U> selector)
+        {
+            var sorted = source.OrderBy(selector).ToArray();
+            return (sorted.First(), sorted.Last());
+        }
+
     }
 }

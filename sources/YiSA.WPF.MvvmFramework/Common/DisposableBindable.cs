@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace YiSA.Markup.Common
+namespace YiSA.WPF.Common
 {
     public class DisposableBindable : Bindable , IDisposable
     {

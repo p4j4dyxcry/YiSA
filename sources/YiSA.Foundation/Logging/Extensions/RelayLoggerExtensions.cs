@@ -1,4 +1,5 @@
 ﻿using System;
+using YiSA.Foundation.Common;
 using YiSA.Foundation.Internal;
 
 namespace YiSA.Foundation.Logging.Extensions

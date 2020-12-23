@@ -8,14 +8,20 @@ namespace YiSA.Markup.Extension
     public class SnapEasingExtension : MarkupExtension
     {
         private readonly int _step;
-        public SnapEasingExtension(int step)
+        private readonly EaseType _easeType;
+        private readonly EasingExtension _easingExtension;
+
+        public SnapEasingExtension(int step , EaseType easeType)
         {
             _step = step;
+            _easeType = easeType;
+            _easingExtension = new EasingExtension(easeType);
         }
         
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return new SnapEasing(_step,new CubicEasing());
+            var easing = _easingExtension.ProvideValue(serviceProvider) as IEasingFunction;
+            return new SnapEasing(_step,easing);
         }
     }
     
@@ -31,16 +37,17 @@ namespace YiSA.Markup.Extension
         {
             return _easeType switch 
             {
+                EaseType.None => NoneEasing.Default,
                 EaseType.Cubic => new CubicEasing(),
                 EaseType.EaseIn => new EaseInEasing(),
                 EaseType.EaseOut => new EaseOutEasing(),
                 EaseType.EaseInBack => new EaseInBackEasing(),
                 EaseType.EaseOutBack => new EaseOutBackEasing(),
                 EaseType.EaseInOutBack => new EaseInOutBackEasing(),
-                EaseType.EaseInElastic=> new EaseInElasticEasing(),
+                EaseType.EaseInElastic => new EaseInElasticEasing(),
                 EaseType.EaseOutElastic => new EaseOutElasticEasing(),
                 EaseType.EaseInOutElastic => new EaseInOutElasticEasing(),
-                _ => new CubicEasing()
+                _ => NoneEasing.Default,
             };
         }
     }
