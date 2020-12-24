@@ -4,10 +4,11 @@
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <RootNamespace>YiSA.WPF</RootNamespace>
+        <UseWpf>true</UseWpf>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Messaging" />
+      <Folder Include="Controls" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,7 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Reactive.Core" Version="5.0.0" />
+      <PackageReference Include="MahApps.Metro" Version="2.4.3" />
+      <PackageReference Include="ReactiveProperty" Version="7.5.1" />
     </ItemGroup>
 
 </Project>
