@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-namespace SvgResourceGenerator
+namespace YiSA.WPF.Controls
 {
     public enum IconType
     {
