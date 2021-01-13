@@ -5,26 +5,12 @@ namespace YiSA.WPF.Common
 {
     public class DisposableBindable : Bindable , IDisposable
     {
-        public IList<IDisposable> Disposables { get; } = new List<IDisposable>();
-        private bool _disposed = false;
+        public IList<IDisposable> Disposables => _disposableHolder.Disposables;
+        private DisposableHolder _disposableHolder = new DisposableHolder();
         
         public void Dispose()
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-
-            if (disposing)
-            {
-                foreach (var disposable in Disposables)
-                {
-                    disposable.Dispose();
-                }
-            }
-            _disposed = true;
+            _disposableHolder.Dispose();
         }
     }
 }
