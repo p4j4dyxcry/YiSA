@@ -130,7 +130,7 @@ namespace YiSA.WPF.Controls
                 BrushCache[hash] = brush;
             }
 
-            return brush;
+            return brush!;
         }
 
         

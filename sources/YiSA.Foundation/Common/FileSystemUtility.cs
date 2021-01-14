@@ -18,6 +18,17 @@ namespace YiSA.Foundation.Common
         }
         
         /// <summary>
+        /// ファイルが存在するかを確認します。
+        /// 内部例外が発生した場合はfalseとしてマークされます。
+        /// </summary>
+        /// <param name="absoluteFilePath"></param>
+        /// <returns></returns>
+        public static void TryFileDelete(string absoluteFilePath)
+        {
+            TryCatchUtility.TryInvoke(() => File.Delete(absoluteFilePath));
+        }
+        
+        /// <summary>
         /// 指定したパスの上位フォルダを作成します。
         /// 内部例外が発生した場合はfalseとしてマークされます。
         /// </summary>

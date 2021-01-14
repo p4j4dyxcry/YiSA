@@ -13,7 +13,7 @@ namespace YiSA.WPF.Common
             T value,
             [CallerMemberName] string? propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(source, value) is false)
+            if (EqualityComparer<T>.Default.Equals(source, value))
             {
                 return false;
             }

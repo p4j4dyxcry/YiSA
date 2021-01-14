@@ -16,6 +16,18 @@ namespace YiSA.Foundation.Internal
                 return fallBack;
             }
         }
+        
+        public static void TryInvoke(Action action )
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
+                // ignored
+            }
+        }
 
         public static T RetryInvoke<T>(Func<T> action,T fallBack, int retryCount, int intervalMs)
         {

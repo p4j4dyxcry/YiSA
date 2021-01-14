@@ -33,13 +33,13 @@ namespace YiSA.Foundation.Common
                     {
                         _synchronizationContext.Post(()=>
                         {
-                            setter(value);
+                            setter(value!);
                             Completed?.Invoke(this,EventArgs.Empty);
                         });
                     }
                     else
                     {
-                        setter(value);
+                        setter(value!);
                         Completed?.Invoke(this,EventArgs.Empty);
                     }
                 }

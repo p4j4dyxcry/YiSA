@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YiSA.Markup", "sources\YiSA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YiSA.Test", "sources\YiSA.Test\YiSA.Test.csproj", "{74EEA0E7-1F52-4AD3-A281-AB816B011EB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaViewer", "MangaViewer\MangaViewer.csproj", "{C064A80B-2E64-4AFF-B578-3DF5A0E9B165}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +30,5 @@ Global
 		{74EEA0E7-1F52-4AD3-A281-AB816B011EB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74EEA0E7-1F52-4AD3-A281-AB816B011EB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74EEA0E7-1F52-4AD3-A281-AB816B011EB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C064A80B-2E64-4AFF-B578-3DF5A0E9B165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C064A80B-2E64-4AFF-B578-3DF5A0E9B165}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C064A80B-2E64-4AFF-B578-3DF5A0E9B165}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C064A80B-2E64-4AFF-B578-3DF5A0E9B165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
