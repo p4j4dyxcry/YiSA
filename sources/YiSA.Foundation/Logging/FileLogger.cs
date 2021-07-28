@@ -14,7 +14,6 @@ namespace YiSA.Foundation.Logging
 {
     public class FileLogger : DisposableHolder , ILogger
     {
-        private readonly CancellationTokenSource _cancellationToken;
         private readonly string _absoluteFilePath;
         private readonly FileLoggerOption _option;
         private readonly ConcurrentQueue<(string,LogLevel,DateTime)> _queue = new ConcurrentQueue<(string,LogLevel,DateTime)>();
@@ -25,8 +24,8 @@ namespace YiSA.Foundation.Logging
             Debug.Assert(string.IsNullOrWhiteSpace(absoluteFilePath));
             _absoluteFilePath = absoluteFilePath;
             _option = option ?? FileLoggerOption.Default;
-            _cancellationToken = new CancellationTokenSource()
-                .DisposeBy(Disposables);
+            
+            Disposables.Add(InternalDisposable.Make(WaitForWriteAsync));
         }
         
         public void WriteLine(string message, LogLevel logLevel)
@@ -63,9 +62,20 @@ namespace YiSA.Foundation.Logging
                         list.Add((info.Item1,info.Item2,info.Item3));
                 }
                 WriteLinesToFile(list);
-            },_cancellationToken.Token);
+            });
             await _currentWriteFileTask;
             _currentWriteFileTask = null;
+        }
+
+        private void WaitForWriteAsync()
+        {
+            if (_option.IsAsync && _queue.Any())
+            {
+                while (_queue.Any())
+                {
+                    Thread.Sleep(10);
+                }
+            }
         }
 
         private void WriteLinesToFile(IEnumerable<(string message, LogLevel logLevel, DateTime dateTime)>lines)
@@ -108,7 +118,7 @@ namespace YiSA.Foundation.Logging
             }
             else
             {
-                LoggingFormatter = DefaultLoggingFormatter;
+                LoggingFormatter = DefaultLoggingFormat;
             }
         }
         
@@ -119,7 +129,7 @@ namespace YiSA.Foundation.Logging
                 AsyncLoggingInterval = TimeSpan.FromMilliseconds(2000),
                 MaximumFileSizeByte = 100 * 1024 * 1024 , // 100MB
             };
-        private static readonly Func<string, LogLevel, DateTime,string> DefaultLoggingFormatter = (msg, lv, dt) => $"{dt}:{lv}:{msg}";
+        private static string DefaultLoggingFormat(string msg, LogLevel lv,DateTime dt)  => $"{dt:yyyy/MM/dd/HH:mm:ss}:{lv}:{msg}";
 
         public FileLoggerOption WithLoggingFormatter(Func<string, LogLevel, DateTime, string> formatter)
         {
