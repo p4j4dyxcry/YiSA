@@ -16,9 +16,9 @@ namespace YiSA.Foundation.Logging
     {
         private readonly CancellationTokenSource _cancellationToken;
         private readonly string _absoluteFilePath;
-        private FileLoggerOption _option;
+        private readonly FileLoggerOption _option;
+        private readonly ConcurrentQueue<(string,LogLevel,DateTime)> _queue = new ConcurrentQueue<(string,LogLevel,DateTime)>();
         private Task? _currentWriteFileTask;
-        private ConcurrentQueue<(string,LogLevel,DateTime)> _queue = new ConcurrentQueue<(string,LogLevel,DateTime)>();
         
         public FileLogger(string absoluteFilePath , FileLoggerOption? option)
         {
@@ -38,42 +38,6 @@ namespace YiSA.Foundation.Logging
                 _ = WriteLineToQueue(message,logLevel,DateTime.Now);
             else
                 WriteLineToFile(message,logLevel,DateTime.Now);
-        }
-
-        private Task _startWriteToFileThread(CancellationToken cancellationToken)
-        {
-            FileSystemUtility.TryCreateParentDirectory(_absoluteFilePath);
-
-            return Task.Run(async () =>
-            {
-                while (true)
-                {
-                    await Task.Delay(_option.AsyncLoggingInterval, cancellationToken);
-
-                    if (_cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    WriteQueueToFile();
-
-                }
-            }, cancellationToken);
-            
-            void WriteQueueToFile()
-            {
-                if(_queue.IsEmpty)
-                    return;
-
-                var list = new List<(string,LogLevel,DateTime)>();
-                while (_queue.Any())
-                {
-                    if(_queue.TryDequeue(out var info))
-                        list.Add((info.Item1,info.Item2,info.Item3));
-                }
-
-                WriteLinesToFile(list);
-            }
         }
         
         private void WriteLineToFile(string message, LogLevel logLevel,DateTime dateTime)
@@ -98,7 +62,6 @@ namespace YiSA.Foundation.Logging
                     if(_queue.TryDequeue(out var info))
                         list.Add((info.Item1,info.Item2,info.Item3));
                 }
-
                 WriteLinesToFile(list);
             },_cancellationToken.Token);
             await _currentWriteFileTask;
