@@ -3,6 +3,7 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
 </Project>

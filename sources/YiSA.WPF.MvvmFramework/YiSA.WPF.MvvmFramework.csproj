@@ -5,6 +5,7 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <RootNamespace>YiSA.WPF</RootNamespace>
         <UseWpf>true</UseWpf>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
