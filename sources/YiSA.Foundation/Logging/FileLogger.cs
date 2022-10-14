@@ -21,7 +21,7 @@ namespace YiSA.Foundation.Logging
         
         public FileLogger(string absoluteFilePath , FileLoggerOption? option)
         {
-            Debug.Assert(string.IsNullOrWhiteSpace(absoluteFilePath));
+            Debug.Assert(!string.IsNullOrWhiteSpace(absoluteFilePath));
             _absoluteFilePath = absoluteFilePath;
             _option = option ?? FileLoggerOption.Default;
             
