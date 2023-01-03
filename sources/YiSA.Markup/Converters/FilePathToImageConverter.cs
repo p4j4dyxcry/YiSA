@@ -19,6 +19,7 @@ namespace YiSA.Markup.Converters
                     image.CacheOption = BitmapCacheOption.OnLoad;
                     image.UriSource = new Uri(filePath);
                     image.EndInit();
+                    image.Freeze();
                     return image;
                 }
                 catch
