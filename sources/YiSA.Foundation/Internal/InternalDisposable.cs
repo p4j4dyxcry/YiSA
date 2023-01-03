@@ -6,14 +6,14 @@ namespace YiSA.Foundation.Internal
     internal static class InternalDisposable
     {
         public static IDisposable Empty { get; } = new InternalEmptyDisposable();
-        public static IDisposable Make(Action dispose) => new InternalDelegateDisposable(dispose);
+        public static IDisposable Make(Action dispose) => new DelegateDisposable(dispose);
     }
 
-    internal class InternalDelegateDisposable : IDisposable
+    public class DelegateDisposable : IDisposable
     {
         private readonly Action _disposeAction;
 
-        public InternalDelegateDisposable(Action disposeAction)
+        public DelegateDisposable(Action disposeAction)
         {
             _disposeAction = disposeAction;
         }
