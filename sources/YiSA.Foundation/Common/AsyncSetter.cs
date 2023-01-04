@@ -19,7 +19,7 @@ namespace YiSA.Foundation.Common
 
         public Task SetValueAsync(Action<T> setter , Func<T> factory )
         {
-            T value = default;
+            T? value = default;
             return Task.Run(() => value = factory())
             .ContinueWith((x) =>
             {
